@@ -129,6 +129,7 @@ rvmmat_test <-function(rvmmat.est, G, impute.method='fixed', GRM = NULL)
     result=cbind(pSmoothsL2, pSmoothsACAT2, pSmoothsL.retro2,  pSmoothsACAT.retro2)
     type1result=rbind(type1result,result)
   }
+  colnames(type1result)=c("HotellingsT","VMMAT","RHotellingsT","RVMMAT")
   return(type1result)
   
 }
