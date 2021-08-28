@@ -20,7 +20,7 @@
 
 
 rvmmat_simu<-function(n.sample=1000, n.time=5, par=list(),
-                      time_cov=TRUE,snp.count = 1000, intercept=TRUE, disease.para = list(), onlypower = FALSE, phe.model = 'logistic', oversampling = "random")
+                      time_cov=TRUE,snp.count = 100, intercept=TRUE, disease.para = list(), onlypower = FALSE, phe.model = 'logistic', oversampling = "random")
 {
   
   if(missing(par) || length(par)==0 )
