@@ -1,0 +1,24 @@
+Package: RVMMAT
+Title: Retrospective Varying Coefficient Mixed Model Association Test
+Version: 0.0.1.0
+Authors@R: 
+    person(given = "Gang", family = "Xu", role = c("aut", "cre"), email = "xug3@unlv.nevada.edu")
+Description: We propose a GLMM-based retrospective varying coefficient mixed model association test, RVMMAT, to detect genetic variant, one at a time, that affects the developmental patterns of a trait.
+License: GPL (>= 3)
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.1
+Depends: R (>= 2.12.1)
+Suggests: 
+    knitr,
+    rmarkdown,
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
+Imports: 
+    expm,
+    stats,
+    mvtnorm,
+    MASS,
+    utils
+VignetteBuilder: knitr
