@@ -1,0 +1,39 @@
+---
+title: "RVMMAT"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{RVMMAT}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(RVMMAT)
+```
+
+Use a simulated longitudinal binary phenotype and genotype data with random ascertainment for 1000 subjects, each with 5 repeated measures. Each subject has 2 causal SNPs.
+```{r}
+p0 = rvmmat_simu(n.sample = 1000, n.time =5, onlypower=T)
+```
+
+
+Estimate GEE null model:
+```{r}
+m0 = rvmmat_est(y.long = p0$phe.long, y.cov = p0$phe.cov.long, time = p0$phe.time)
+
+```
+
+Perform L-BRAT and GEE tests
+```{r}
+p_val = rvmmat_pavlue(m0, G = p0$snp.mat)
+tail(p_val)
+```
+
+
