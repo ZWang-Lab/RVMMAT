@@ -130,6 +130,7 @@ rvmmat_test <-function(rvmmat.est, G, impute.method='fixed', GRM = NULL)
     type1result=rbind(type1result,result)
   }
   colnames(type1result)=c("HotellingsT","VMMAT","RHotellingsT","RVMMAT")
+  rownames(result)=snp.names;
   return(type1result)
   
 }
