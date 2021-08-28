@@ -1,6 +1,6 @@
 # RVMMAT
 
-RVMMAT is an R program that performs retrospective varying Coefficient mixed model association test  for longitudinal binary traits in population samples. 
+RVMMAT is an R program that performs retrospective varying coefficient mixed model association test  for longitudinal binary traits in population samples. 
 
 
 ## Installation Instructions:
