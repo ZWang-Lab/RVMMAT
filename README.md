@@ -25,6 +25,4 @@ devtools::install_github(repo = 'ZWang-Lab/RVMMAT')
 ```
 ## Usage instructions
 
-All functions and examples in the RVMMAT are available in the manual file (https://github.com/ZWang-Lab/RVMMAT/blob/master/RVMMAT_0.0.1.0.pdf)
-
-
+All functions and examples in the RVMMAT are available in the manual file (https://github.com/ZWang-Lab/RVMMAT/blob/master/RVMMAT_0.0.1.0.pdf) and and in the vignettes (https://github.com/ZWang-Lab/RVMMAT/blob/master/vignettes/RVMMAT.Rmd)
