@@ -16,17 +16,8 @@ RVMMAT is an R program that performs retrospective varying Coefficient mixed mod
 Please install the required R package before you install LBRAT package. Please install the **RVMMAT** as following steps.
 
  
-### Install RVMMAT on LUNIX or Mac OSX
 
-```
-git clone https://github.com/ZWang-Lab/RVMMAT.git
-
-R CMD INSTALL RVMMAT
-
-```
-
-Alternatively, one can install it in R using the following code.
-### Install LBRAT in R
+### Install RVMMAT in R
 ```
 library(devtools)
 devtools::install_github(repo = 'ZWang-Lab/RVMMAT')
