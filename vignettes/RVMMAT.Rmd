@@ -24,15 +24,15 @@ p0 = rvmmat_simu(n.sample = 1000, n.time =5, onlypower=T)
 ```
 
 
-Estimate GEE null model:
+Estimate null model:
 ```{r}
-m0 = rvmmat_est(y.long = p0$phe.long, y.cov = p0$phe.cov.long, time = p0$phe.time)
+m0 = rvmmat_est(y.long = p0$phe.long, y.cov = p0$phe.cov.long, time = p0$phe.time,phe.model=p0$phe.model)
 
 ```
 
-Perform L-BRAT and GEE tests
+Perform HotellingsT, VAMMT, RHotellingsT, and RVMMAT tests
 ```{r}
-p_val = rvmmat_pavlue(m0, G = p0$snp.mat)
+p_val = rvmmat_test(m0, G = p0$snp.mat)
 tail(p_val)
 ```
 
