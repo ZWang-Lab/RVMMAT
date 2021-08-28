@@ -25,8 +25,15 @@ R CMD INSTALL RVMMAT
 
 ```
 
+Alternatively, one can install it in R using the following code.
+### Install LBRAT in R
+```
+library(devtools)
+devtools::install_github(repo = 'ZWang-Lab/RVMMAT')
+
+```
 ## Usage instructions
 
-All functions and examples in the RVMMAT are available in the manual .
+All functions and examples in the RVMMAT are available in the manual (https://github.com/ZWang-Lab/RVMMAT/blob/master/RVMMAT_0.0.1.0.pdf).
 
 
