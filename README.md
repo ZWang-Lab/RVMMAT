@@ -13,7 +13,7 @@ RVMMAT is an R program that performs retrospective varying coefficient mixed mod
     
 3. PLINK 1.0 or 1.9 (https://www.cog-genomics.org/plink2)
 
-Please install the required R package before you install LBRAT package. Please install the **RVMMAT** as following steps.
+Please install the required R package before you install RVMMAT package. Please install the **RVMMAT** as following steps.
 
  
 
