@@ -9,7 +9,7 @@ rvmmat_simu(
   n.time = 5,
   par = list(),
   time_cov = TRUE,
-  snp.count = 1000,
+  snp.count = 100,
   intercept = TRUE,
   disease.para = list(),
   onlypower = FALSE,
@@ -39,7 +39,7 @@ rvmmat_simu(
 \item{oversampling}{String, the ascertainment scheme, three optional value: 'random', 'baseline', 'sum'}
 }
 \value{
-A list object is returned to be used as object for LBRAT test
+A list object is returned to be used as object for RVMMAT test
 }
 \description{
 This function use pre-defined parameters to make the simulation data for the RVMMAT test (including type I and power test)

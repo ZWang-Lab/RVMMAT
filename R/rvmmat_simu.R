@@ -15,7 +15,7 @@
 #'
 #'
 #'
-#' @return A list object is returned to be used as object for LBRAT test
+#' @return A list object is returned to be used as object for RVMMAT test
 #' @export
 
 
