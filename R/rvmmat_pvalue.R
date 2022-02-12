@@ -7,7 +7,7 @@
 #' @param impute.method choose the iputation method when there is missing genotype. Optional options are: 'random', 'fixed' or 'bestguess'.
 #' @param GRM takes m-by-m genetic correlation matrix or kinship matrix.
 #'
-#' @return This function returns a dataframe. The row name is the SNP ID, the first column is the prospective score statistics, the second colum is the retrospective score statistics, the third column is the prospective pvalue and the forth column is the restrospective pvalue
+#' @return This function returns a dataframe. The row name is the SNP ID, the first column is the prospective pvalue and the second colum is the restrospective pvalue.
 #'
 #' @export
 
@@ -126,10 +126,10 @@ rvmmat_test <-function(rvmmat.est, G, impute.method='fixed', GRM = NULL)
     Tr=(tan((0.5-pSmoothsL.retro2)*pi)+tan((0.5-pSmoothsSKAT.retro2)*pi))/2
     pSmoothsACAT.retro2=0.5-atan(Tr)/pi
     
-    result=cbind(pSmoothsL2, pSmoothsACAT2, pSmoothsL.retro2,  pSmoothsACAT.retro2)
+    result=cbind(pSmoothsACAT2, pSmoothsACAT.retro2)
     type1result=rbind(type1result,result)
   }
-  colnames(type1result)=c("HotellingsT","VMMAT","RHotellingsT","RVMMAT")
+  colnames(type1result)=c("VMMAT","RVMMAT")
   rownames(type1result)=snp.names;
   return(type1result)
   

@@ -16,7 +16,7 @@ rvmmat_test(rvmmat.est, G, impute.method = "fixed", GRM = NULL)
 \item{GRM}{takes m-by-m genetic correlation matrix or kinship matrix.}
 }
 \value{
-This function returns a dataframe. The row name is the SNP ID, the first column is the prospective score statistics, the second colum is the retrospective score statistics, the third column is the prospective pvalue and the forth column is the restrospective pvalue
+This function returns a dataframe. The row name is the SNP ID, the first column is the prospective pvalue and the second colum is the restrospective pvalue.
 }
 \description{
 This function tests a SNPs for a given SNP set for a given estimated null model.

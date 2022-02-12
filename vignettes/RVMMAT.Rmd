@@ -30,7 +30,7 @@ m0 = rvmmat_est(y.long = p0$phe.long, y.cov = p0$phe.cov.long, time = p0$phe.tim
 
 ```
 
-Perform HotellingsT, VAMMT, RHotellingsT, and RVMMAT tests
+Perform VAMMT and RVMMAT tests
 ```{r}
 p_val = rvmmat_test(m0, G = p0$snp.mat)
 tail(p_val)

@@ -237,6 +237,7 @@ rvmmat_est<-function(y.long, time, y.cov, phe.model = phe.model,maxiter = 50,tol
     par0=dqlAI$par;vY=dqlAI$vY;mu1=dqlAI$mu1; B0=B1;phi<- 1
   }
   
+  if(max(abs(par0-parc))>tol*max(abs(par0))|max(abs(B0-B1))>tol*max(abs(B0))) warning("Model does not converge!")
   
   cat("SIG=",par0, "COV=", B0, "\n");
   tau <- par0
