@@ -2,8 +2,19 @@ Package: RVMMAT
 Title: Retrospective Varying Coefficient Mixed Model Association Test
 Version: 0.0.1.0
 Authors@R: 
-    person(given = "Gang", family = "Xu", role = c("aut", "cre"), email = "xug3@unlv.nevada.edu")
-Description: We propose a GLMM-based retrospective varying coefficient mixed model association test, RVMMAT, to detect genetic variant, one at a time, that affects the developmental patterns of a trait.
+  c(person(given = "Gang",
+           family = "Xu",
+           role = c("aut", "cre"),
+           email = "xug3@unlv.nevada.edu"),
+    person(given = "Amei",
+           family = "Amei",
+           role = "aut"),
+    person(given = "Zuoheng",
+           family = "Wang",
+           role = "aut"))
+Author: Gang Xu [aut, cre], Amei Amei [aut], Zuoheng Wang [aut]
+Maintainer: Gang Xu <xug3@unlv.nevada.edu>
+Description: We propose a GLMM-based retrospective varying coefficient mixed model association test, RVMMAT, to detect genetic variant that affects the developmental patterns of a trait.
 License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true
