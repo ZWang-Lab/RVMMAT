@@ -247,7 +247,6 @@ rvmmat_est<-function(y.long, time, y.cov, phe.model = phe.model,maxiter = 50,tol
       WM2 = -2*vu^2 + (dvu)^2*vu;
       n.total<-1;n.rep<-as.numeric(table(time[,1]))
       ZWZ=Z2WZ2=matrix(0,3,3);XWZ2=matrix(0,ncol(X_1),3)
-      diagB=matrix(0,N,nrow)
       for (i in 1:nrow)
       {
         ni<-n.rep[i];index<-n.total:(n.total+ni-1);n.total<-n.total + ni
@@ -256,18 +255,17 @@ rvmmat_est<-function(y.long, time, y.cov, phe.model = phe.model,maxiter = 50,tol
         AR.1 <- array(1:ni, dim=c(ni,ni))
         v2 <- 0.7^abs(AR.1-t(AR.1));
         B=B2=rep(1,ni);
-        diagB[index,i]=B
         ihR=MASS::ginv(expm::sqrtm(v2));ihR2=ihR^2
         hRr=Re(expm::sqrtm(Rr));hRr2=hRr^2
-        ZWZ=ZWZ+matrix(c(0,sum((t(hRr)%*%(WM0.i*B))^2),sum((t(hRr)%*%(WM0.i*ihR))^2),
-                         sum((t(B)%*%(WM0.i*hRr))^2),sum((t(B)%*%(WM0.i*B))^2),sum((t(B)%*%(WM0.i*ihR))^2),
-                         sum((t(ihR)%*%(WM0.i*hRr))^2),sum((t(ihR)%*%(WM0.i*B))^2),sum((t(ihR)%*%(WM0.i*ihR))^2)),3,3,byrow=T)
-        Z2WZ2=Z2WZ2+matrix(c(sum(t(hRr2)%*%(WM2.i*hRr2)),sum(t(hRr2)%*%(WM2.i*B2)),sum(t(hRr2)%*%(WM2.i*ihR2)),
-                             sum(t(B2)%*%(WM2.i*hRr2)),sum(t(B2)%*%(WM2.i*B2)),sum(t(B)%*%(WM2.i*ihR2)),
-                             sum(t(ihR2)%*%(WM2.i*hRr2)),sum(t(ihR2)%*%(WM2.i*B2)),sum(t(ihR)%*%(WM2.i*ihR2))),3,3,byrow=T)
-        XWZ2=XWZ2+cbind(rowSums(t(X.i)%*%(WM1.i*hRr2)),rowSums(t(X.i)%*%(WM1.i*B2)),rowSums(t(X.i)%*%(WM1.i*ihR2)))
+        ZWZ=ZWZ+matrix(c(sum((t(B)%*%(WM0.i*B))^2),sum((t(B)%*%(WM0.i*ihR))^2),sum((t(B)%*%(WM0.i*hRr))^2),
+                         sum((t(ihR)%*%(WM0.i*B))^2),sum((t(ihR)%*%(WM0.i*ihR))^2),sum((t(ihR)%*%(WM0.i*hRr))^2),
+                         sum((t(hRr)%*%(WM0.i*B))^2),sum((t(hRr)%*%(WM0.i*ihR))^2),0),3,3,byrow=T)
+        Z2WZ2=Z2WZ2+matrix(c(sum(t(B2)%*%(WM2.i*B2)),sum(t(B2)%*%(WM2.i*ihR2)), sum(t(B2)%*%(WM2.i*hRr2)),
+                             sum(t(ihR2)%*%(WM2.i*B2)),sum(t(ihR2)%*%(WM2.i*ihR2)), sum(t(ihR2)%*%(WM2.i*hRr2)),
+                             sum(t(hRr2)%*%(WM2.i*B2)),sum(t(hRr2)%*%(WM2.i*ihR2)),sum(t(hRr2)%*%(WM2.i*hRr2))),3,3,byrow=T)
+        XWZ2=XWZ2+cbind(rowSums(t(X.i)%*%(WM1.i*B2)),rowSums(t(X.i)%*%(WM1.i*ihR2)),rowSums(t(X.i)%*%(WM1.i*hRr2)))
       }
-      ZWZ[1,1]=sum((t(NhalfR)%*%(WM2*NhalfR))^2)
+      ZWZ[3,3]=sum((t(NhalfR)%*%(WM0*NhalfR))^2)
       
       Cp=ZWZ/2
       XWX=t(X_1)%*%(WM0*X_1)
