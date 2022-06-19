@@ -198,7 +198,7 @@ rvmmat_est<-function(y.long, time, y.cov, phe.model = phe.model,maxiter = 50,tol
         next
       }
       
-      if(max(abs(par0-parc))<tol*max(abs(par0))&&max(abs(B0-B1))<tol*max(abs(B0))) break
+      if(max(abs(par0-parc))<=tol*max(abs(par0))&&max(abs(B0-B1))<=tol*max(abs(B0))) break
       n=n+1;B0=B1;par0=parc
     }
     par0=parc;B0=B1;vY0=dqlAI$vY; phi<- par0[4]
@@ -233,7 +233,7 @@ rvmmat_est<-function(y.long, time, y.cov, phe.model = phe.model,maxiter = 50,tol
         par0=rep(stats::var(Y0, na.rm=T)/3,3)*stats::runif(3);vY0=Y0;mu0=mu
         next
       }
-      if(max(abs(par0-parc))<tol*max(abs(par0))&&max(abs(B0-B1))<tol*max(abs(B0))) break
+      if(max(abs(par0-parc))<=tol*max(abs(par0))&&max(abs(B0-B1))<=tol*max(abs(B0))) break
       n=n+1;B0=B1;par0=parc
     }
     
@@ -242,11 +242,11 @@ rvmmat_est<-function(y.long, time, y.cov, phe.model = phe.model,maxiter = 50,tol
     
     if(VCcorrection==TRUE)
     {
-      par.SS=par.init;par.SS[1:2]=0;B0= rep(0,dim(X_1)[2]);vY0=Y0;mu0=mu;n=0
+      par.SS=par0;par.SS[1:2]=0;B0= rep(0,dim(X_1)[2]);vY0=Y0;mu0=mu;n=0
       while(n<maxiter){
         dqlAI=try(getD(par.SS,vY0,mu0,phe.model,SSonly=TRUE))
         parc=dqlAI$par;B1=dqlAI$B;vY0=dqlAI$vY;mu0=dqlAI$mu1;
-        if(max(abs(par.SS-parc))<=tol*max(abs(par.SS))&&max(abs(B0-B1))<tol*max(abs(B0))) break
+        if(max(abs(par.SS-parc))<=tol*max(abs(par.SS))&&max(abs(B0-B1))<=tol*max(abs(B0))) break
         n=n+1;B0=B1;par.SS=parc
       } 
       
@@ -278,11 +278,11 @@ rvmmat_est<-function(y.long, time, y.cov, phe.model = phe.model,maxiter = 50,tol
       XWX=t(X_1)%*%(c(WM0)*X_1)
       Cq=Cp+(Z2WZ2-t(XWZ2)%*%MASS::ginv(XWX)%*%XWZ2)/4
       par0[1:2]=abs(MASS::ginv(Cq)%*%Cp%*%par0[1:2])
-      par0[3]=par.init[3];B0= rep(0,dim(X_1)[2]);vY0=Y0;mu0=mu;n=0
+      B0= rep(0,dim(X_1)[2]);vY0=Y0;mu0=mu;n=0
       while(n<maxiter){
         dqlAI=try(getD(par0,vY0,mu0,phe.model,SSonly=TRUE))
         parc=dqlAI$par;B1=dqlAI$B;vY0=dqlAI$vY;mu0=dqlAI$mu1;
-        if(max(abs(par0-parc))<=tol*max(abs(par0))&&max(abs(B0-B1))<tol*max(abs(B0))) break
+        if(max(abs(par0-parc))<=tol*max(abs(par0))&&max(abs(B0-B1))<=tol*max(abs(B0))) break
         n=n+1;B0=B1;par0=parc
       } 
     }
