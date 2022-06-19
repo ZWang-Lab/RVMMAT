@@ -10,7 +10,9 @@ rvmmat_est(
   y.cov,
   phe.model = phe.model,
   maxiter = 50,
-  tol = 10^(-6)
+  tol = 10^(-6),
+  Hd = 2,
+  VCcorrection = TRUE
 )
 }
 \arguments{
@@ -25,6 +27,10 @@ rvmmat_est(
 \item{maxiter}{Numeric, the maximum count for the iterative estimation in when using mixture correlation structure}
 
 \item{tol}{Numeric, tolerance for the iterative estimation in when using mixture correlation structure}
+
+\item{Hd}{Numeric, degree of derivative of smooth function which lead to smooth spline of order 2Hd}
+
+\item{VCcorrection}{Logical variable, indicating whether apply correction for variance components and natural parameters}
 }
 \value{
 This function returns a list object with model parameters and residuals of the NULL model

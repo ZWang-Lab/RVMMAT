@@ -8,11 +8,13 @@
 #' @param phe.model String, the phenotype model, two optional values: 'logistic', 'liability'
 #' @param maxiter Numeric, the maximum count for the iterative estimation in when using mixture correlation structure
 #' @param tol Numeric, tolerance for the iterative estimation in when using mixture correlation structure
+#' @param Hd Numeric, degree of derivative of smooth function which lead to smooth spline of order 2Hd
+#' @param VCcorrection Logical variable, indicating whether apply correction for variance components and natural parameters
 #' @return This function returns a list object with model parameters and residuals of the NULL model
 #' @export
 
 
-rvmmat_est<-function(y.long, time, y.cov, phe.model = phe.model,maxiter = 50,tol=10^(-6))
+rvmmat_est<-function(y.long, time, y.cov, phe.model = phe.model,maxiter = 50,tol=10^(-6),Hd=2,VCcorrection=FALSE)
 {
   
   
@@ -21,10 +23,10 @@ rvmmat_est<-function(y.long, time, y.cov, phe.model = phe.model,maxiter = 50,tol
   cluster.id<-unique(time[,1]);
   nrow <- m<-length(cluster.id);
   
-  time[,2]=(time[,2]-min(time[,2]))/(max(time[,2])-min(time[,2]))
+  time[,2]=time[,2]/max(time[,2])
   
   m=length(unique(time[,1]))
-  Hd=4; ncol=ntime=length(unique(time[,2])); knots=unique(time[,2])
+  ncol=ntime=length(unique(time[,2])); knots=unique(time[,2])
   Rr=diag(rep(0,ntime))
   for(i in 1:ntime){
     for(jk in i:ntime){
@@ -42,7 +44,6 @@ rvmmat_est<-function(y.long, time, y.cov, phe.model = phe.model,maxiter = 50,tol
   for(i in 1:N) inciN[i,which(knots==time[i,2])]=1
   NTd=inciN%*%Td; NRr=inciN%*%Rr; NhalfR=inciN%*%Re(expm::sqrtm(Rr))
   
-  #for(i in 2:Hd) NTd[,i]=(NTd[,i]-mean(NTd[,i]))/sd(NTd[,i])
   
   y.cov=cbind(y.cov,NTd[,-1])
   X <- as.matrix(y.cov);
@@ -234,10 +235,56 @@ rvmmat_est<-function(y.long, time, y.cov, phe.model = phe.model,maxiter = 50,tol
       n=n+1;B0=B1;par0=parc
     }
     
-    par0=dqlAI$par;vY=dqlAI$vY;mu1=dqlAI$mu1; B0=B1;phi<- 1
+    par0=dqlAI$par;vY=dqlAI$vY;mu1=dqlAI$mu1; 
+    if(max(abs(par0-parc))>tol*max(abs(par0))|max(abs(B0-B1))>tol*max(abs(B0))) warning("Model does not converge!")
+    
+    if(VCcorrection==TRUE)
+    {
+      vu = mu*(1-mu);
+      dvu = 1 - 2*mu;
+      WM0 = vu;
+      WM1 = vu*dvu;
+      WM2 = -2*vu^2 + (dvu)^2*vu;
+      n.total<-1;n.rep<-as.numeric(table(time[,1]))
+      ZWZ=Z2WZ2=matrix(0,3,3);XWZ2=matrix(0,ncol(X_1),3)
+      diagB=matrix(0,N,nrow)
+      for (i in 1:nrow)
+      {
+        ni<-n.rep[i];index<-n.total:(n.total+ni-1);n.total<-n.total + ni
+        mu.i<-mu1[index];WM0.i =WM0[index];WM1.i =WM1[index];WM2.i =WM2[index];X.i=X_1[index,]
+        v1<-matrix(1,length(index), length(index));
+        AR.1 <- array(1:ni, dim=c(ni,ni))
+        v2 <- 0.7^abs(AR.1-t(AR.1));
+        B=B2=rep(1,ni);
+        diagB[index,i]=B
+        ihR=MASS::ginv(expm::sqrtm(v2));ihR2=ihR^2
+        hRr=Re(expm::sqrtm(Rr));hRr2=hRr^2
+        ZWZ=ZWZ+matrix(c(0,sum((t(hRr)%*%(WM0.i*B))^2),sum((t(hRr)%*%(WM0.i*ihR))^2),
+                         sum((t(B)%*%(WM0.i*hRr))^2),sum((t(B)%*%(WM0.i*B))^2),sum((t(B)%*%(WM0.i*ihR))^2),
+                         sum((t(ihR)%*%(WM0.i*hRr))^2),sum((t(ihR)%*%(WM0.i*B))^2),sum((t(ihR)%*%(WM0.i*ihR))^2)),3,3,byrow=T)
+        Z2WZ2=Z2WZ2+matrix(c(sum(t(hRr2)%*%(WM2.i*hRr2)),sum(t(hRr2)%*%(WM2.i*B2)),sum(t(hRr2)%*%(WM2.i*ihR2)),
+                             sum(t(B2)%*%(WM2.i*hRr2)),sum(t(B2)%*%(WM2.i*B2)),sum(t(B)%*%(WM2.i*ihR2)),
+                             sum(t(ihR2)%*%(WM2.i*hRr2)),sum(t(ihR2)%*%(WM2.i*B2)),sum(t(ihR)%*%(WM2.i*ihR2))),3,3,byrow=T)
+        XWZ2=XWZ2+cbind(rowSums(t(X.i)%*%(WM1.i*hRr2)),rowSums(t(X.i)%*%(WM1.i*B2)),rowSums(t(X.i)%*%(WM1.i*ihR2)))
+      }
+      ZWZ[1,1]=sum((t(NhalfR)%*%(WM2*NhalfR))^2)
+      
+      Cp=ZWZ/2
+      XWX=t(X_1)%*%(WM0*X_1)
+      Cq=Cp+(Z2WZ2-t(XWZ2)%*%MASS::ginv(XWX)%*%XWZ2)/4
+      par0=abs(MASS::ginv(Cq)%*%Cp%*%par0)
+      while(n<maxiter)
+      {
+        fitb=fitbi(par0,vY,mu1)
+        B1=fitb$B;vY0=fitb$vY;mu0=fitb$mu1;
+        if(max(abs(B0-B1))<tol*max(abs(B0))) break
+        n=n+1;B0=B1;vY=vY0;mu1=mu0;
+      }
+    }
+    B0=B1;vY=vY0;mu1=mu0;phi<- 1
   }
   
-  if(max(abs(par0-parc))>tol*max(abs(par0))|max(abs(B0-B1))>tol*max(abs(B0))) warning("Model does not converge!")
+
   
   cat("SIG=",par0, "COV=", B0, "\n");
   tau <- par0

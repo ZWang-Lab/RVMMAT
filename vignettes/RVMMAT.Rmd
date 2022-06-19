@@ -20,7 +20,7 @@ library(RVMMAT)
 
 Use a simulated longitudinal binary phenotype and genotype data with random ascertainment for 1000 subjects, each with 5 repeated measures. Each subject has 2 causal SNPs.
 ```{r}
-p0 = rvmmat_simu(n.sample = 1000, n.time =5, onlypower=T)
+p0 = rvmmat_simu(n.sample = 1000, n.time =5)
 ```
 
 

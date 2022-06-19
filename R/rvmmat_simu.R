@@ -217,8 +217,9 @@ simu_snp<-function(n.sample, snp.count = 1000)
 #generate null phenotype
 simu.binary.phe<-function( n.sample, n.time, par, intercept, time_cov, disease.para, phe.model){
   
+  sigma.c=matrix(0.5,n.time,n.time);diag(sigma.c)=rep(1,n.time)
+  cov.mat <- cbind( c(t(mvtnorm::rmvnorm( n.sample,  rep(0, n.time), sigma.c ))), rep(ifelse(runif(n.sample)>0.5, 0, 1), each = n.time));
   
-  cov.mat <- cbind( stats::rnorm(n.sample*n.time, 0, 1 ), rep(ifelse(stats::runif(n.sample)>0.5, 0, 1), each = n.time));
   
   if(intercept){
     mu <- f.simu(n.sample, n.time, par) + matrix(cbind(1, cov.mat )%*%c( par$b0, par$b1, par$b2 ), n.sample, n.time, byrow = TRUE)
