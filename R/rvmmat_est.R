@@ -88,7 +88,7 @@ rvmmat_est<-function(y.long, time, y.cov, phe.model = phe.model,maxiter = 50,tol
   }
   
   
-  getD=function(par,vY,mu1,phe.model=phe.model){
+  getD=function(par,vY,mu1,phe.model=phe.model,SSonly=FALSE){
     solveV=matrix(0,nrow=N,ncol=N)
     n.total<-1;n.rep<-as.numeric(table(time[,1]))
     for (i in 1:nrow)
@@ -149,15 +149,17 @@ rvmmat_est<-function(y.long, time, y.cov, phe.model = phe.model,maxiter = 50,tol
     }else{
       dql=rep(0,3)
       VPY=matrix(0,ncol=3,nrow=length(PY))
-      n.total<-1;n.rep<-as.numeric(table(time[,1]))
-      for(i in 1:nrow){
-        ni<-n.rep[i];index<-n.total:(n.total+ni-1);n.total<-n.total + ni
-        AR.1 <- array(1:ni, dim=c(ni,ni))
-        R.i<- 0.7^abs(AR.1-t(AR.1))
-        dql[1]<-dql[1]+ (sum(PY[index])^2-sum(P[index,index]))/2;
-        dql[2]<-dql[2]+(crossprod(PY[index],R.i)%*%PY[index]-sum(diag(P[index,index]%*%R.i)))/2
-        VPY[index,1]=rep(sum(PY[index]),ni)
-        VPY[index,2]=R.i%*%PY[index]
+      if(!SSonly){
+        n.total<-1;n.rep<-as.numeric(table(time[,1]))
+        for(i in 1:nrow){
+          ni<-n.rep[i];index<-n.total:(n.total+ni-1);n.total<-n.total + ni
+          AR.1 <- array(1:ni, dim=c(ni,ni))
+          R.i<- 0.7^abs(AR.1-t(AR.1))
+          dql[1]<-dql[1]+ (sum(PY[index])^2-sum(P[index,index]))/2;
+          dql[2]<-dql[2]+(crossprod(PY[index],R.i)%*%PY[index]-sum(diag(P[index,index]%*%R.i)))/2
+          VPY[index,1]=rep(sum(PY[index]),ni)
+          VPY[index,2]=R.i%*%PY[index]
+        }
       }
       dql[3]= (sum(crossprod(PY,NhalfR)^2)-sum(diag(crossprod(NhalfR,P)%*%NhalfR)))/2
       VPY[,3]=NhalfR%*%crossprod(NhalfR,PY)
@@ -240,13 +242,22 @@ rvmmat_est<-function(y.long, time, y.cov, phe.model = phe.model,maxiter = 50,tol
     
     if(VCcorrection==TRUE)
     {
-      vu = mu*(1-mu);
-      dvu = 1 - 2*mu;
+      par.SS=par.init;par.SS[1:2]=0;B0= rep(0,dim(X_1)[2]);vY0=Y0;mu0=mu;n=0
+      while(n<maxiter){
+        dqlAI=try(getD(par.SS,vY0,mu0,phe.model,SSonly=TRUE))
+        parc=dqlAI$par;B1=dqlAI$B;vY0=dqlAI$vY;mu0=dqlAI$mu1;
+        if(max(abs(par.SS-parc))<=tol*max(abs(par.SS))&&max(abs(B0-B1))<tol*max(abs(B0))) break
+        n=n+1;B0=B1;par.SS=parc
+      } 
+      
+      mu.SS=dqlAI$mu1
+      vu = mu.SS*(1-mu.SS);
+      dvu = 1 - 2*mu.SS;
       WM0 = vu;
       WM1 = vu*dvu;
       WM2 = -2*vu^2 + (dvu)^2*vu;
       n.total<-1;n.rep<-as.numeric(table(time[,1]))
-      ZWZ=Z2WZ2=matrix(0,3,3);XWZ2=matrix(0,ncol(X_1),3)
+      ZWZ=Z2WZ2=matrix(0,2,2);XWZ2=matrix(0,ncol(X_1),2)
       for (i in 1:nrow)
       {
         ni<-n.rep[i];index<-n.total:(n.total+ni-1);n.total<-n.total + ni
@@ -256,33 +267,28 @@ rvmmat_est<-function(y.long, time, y.cov, phe.model = phe.model,maxiter = 50,tol
         v2 <- 0.7^abs(AR.1-t(AR.1));
         B=B2=rep(1,ni);
         ihR=MASS::ginv(expm::sqrtm(v2));ihR2=ihR^2
-        hRr=Re(expm::sqrtm(Rr));hRr2=hRr^2
-        ZWZ=ZWZ+matrix(c(sum((t(B)%*%(WM0.i*B))^2),sum((t(B)%*%(WM0.i*ihR))^2),sum((t(B)%*%(WM0.i*hRr))^2),
-                         sum((t(ihR)%*%(WM0.i*B))^2),sum((t(ihR)%*%(WM0.i*ihR))^2),sum((t(ihR)%*%(WM0.i*hRr))^2),
-                         sum((t(hRr)%*%(WM0.i*B))^2),sum((t(hRr)%*%(WM0.i*ihR))^2),0),3,3,byrow=T)
-        Z2WZ2=Z2WZ2+matrix(c(sum(t(B2)%*%(WM2.i*B2)),sum(t(B2)%*%(WM2.i*ihR2)), sum(t(B2)%*%(WM2.i*hRr2)),
-                             sum(t(ihR2)%*%(WM2.i*B2)),sum(t(ihR2)%*%(WM2.i*ihR2)), sum(t(ihR2)%*%(WM2.i*hRr2)),
-                             sum(t(hRr2)%*%(WM2.i*B2)),sum(t(hRr2)%*%(WM2.i*ihR2)),sum(t(hRr2)%*%(WM2.i*hRr2))),3,3,byrow=T)
-        XWZ2=XWZ2+cbind(rowSums(t(X.i)%*%(WM1.i*B2)),rowSums(t(X.i)%*%(WM1.i*ihR2)),rowSums(t(X.i)%*%(WM1.i*hRr2)))
+        ZWZ=ZWZ+matrix(c(sum((t(B)%*%(WM0.i*B))^2),sum((t(B)%*%(WM0.i*ihR))^2),
+                         sum((t(ihR)%*%(WM0.i*B))^2),sum((t(ihR)%*%(WM0.i*ihR))^2)),2,2,byrow=T)
+        Z2WZ2=Z2WZ2+matrix(c(sum(t(B2)%*%(WM2.i*B2)),sum(t(B2)%*%(WM2.i*ihR2)), 
+                             sum(t(ihR2)%*%(WM2.i*B2)),sum(t(ihR2)%*%(WM2.i*ihR2))),2,2,byrow=T)
+        XWZ2=XWZ2+cbind(rowSums(t(X.i)%*%(WM1.i*B2)),rowSums(t(X.i)%*%(WM1.i*ihR2)))
       }
-      ZWZ[3,3]=sum((t(NhalfR)%*%(WM0*NhalfR))^2)
       
       Cp=ZWZ/2
-      XWX=t(X_1)%*%(WM0*X_1)
+      XWX=t(X_1)%*%(c(WM0)*X_1)
       Cq=Cp+(Z2WZ2-t(XWZ2)%*%MASS::ginv(XWX)%*%XWZ2)/4
-      par0=abs(MASS::ginv(Cq)%*%Cp%*%par0)
-      while(n<maxiter)
-      {
-        fitb=fitbi(par0,vY,mu1)
-        B1=fitb$B;vY0=fitb$vY;mu0=fitb$mu1;
-        if(max(abs(B0-B1))<tol*max(abs(B0))) break
-        n=n+1;B0=B1;vY=vY0;mu1=mu0;
-      }
+      par0[1:2]=abs(MASS::ginv(Cq)%*%Cp%*%par0[1:2])
+      par0[3]=par.init[3];B0= rep(0,dim(X_1)[2]);vY0=Y0;mu0=mu;n=0
+      while(n<maxiter){
+        dqlAI=try(getD(par0,vY0,mu0,phe.model,SSonly=TRUE))
+        parc=dqlAI$par;B1=dqlAI$B;vY0=dqlAI$vY;mu0=dqlAI$mu1;
+        if(max(abs(par0-parc))<=tol*max(abs(par0))&&max(abs(B0-B1))<tol*max(abs(B0))) break
+        n=n+1;B0=B1;par0=parc
+      } 
     }
     B0=B1;vY=vY0;mu1=mu0;phi<- 1
   }
   
-
   
   cat("SIG=",par0, "COV=", B0, "\n");
   tau <- par0

@@ -62,7 +62,7 @@ rvmmat_test <-function(rvmmat.est, G, impute.method='fixed', GRM = NULL)
   for(ss in 1:m){
     if(IDtable[ss]==1){
       BTResNTd[ss,]= ResNTd[which(time[,1]==ss),]
-    }else{ BTResNTd[ss,]= colSums(ResNTd[which(time[,1]==ss),])
+    }else{ BTResNTd[ss,]= colSums(as.matrix(ResNTd[which(time[,1]==ss),]))
     }
   }
   
