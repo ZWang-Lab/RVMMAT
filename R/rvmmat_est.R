@@ -266,18 +266,22 @@ rvmmat_est<-function(y.long, time, y.cov, phe.model = phe.model,maxiter = 50,tol
         AR.1 <- array(1:ni, dim=c(ni,ni))
         v2 <- 0.7^abs(AR.1-t(AR.1));
         B=B2=rep(1,ni);
-        ihR=MASS::ginv(expm::sqrtm(v2));ihR2=ihR^2
+        ihR=expm::sqrtm(v2);ihR2=ihR^2
         ZWZ=ZWZ+matrix(c(sum((t(B)%*%(WM0.i*B))^2),sum((t(B)%*%(WM0.i*ihR))^2),
                          sum((t(ihR)%*%(WM0.i*B))^2),sum((t(ihR)%*%(WM0.i*ihR))^2)),2,2,byrow=T)
         Z2WZ2=Z2WZ2+matrix(c(sum(t(B2)%*%(WM2.i*B2)),sum(t(B2)%*%(WM2.i*ihR2)), 
                              sum(t(ihR2)%*%(WM2.i*B2)),sum(t(ihR2)%*%(WM2.i*ihR2))),2,2,byrow=T)
-        XWZ2=XWZ2+cbind(rowSums(t(X.i)%*%(WM1.i*B2)),rowSums(t(X.i)%*%(WM1.i*ihR2)))
+        if(ni==1){
+          XWZ2=XWZ2+cbind(X.i*(WM1.i*B2),X.i*(WM1.i*ihR2[1,1]))
+        }else{
+          XWZ2=XWZ2+cbind(rowSums(t(X.i)%*%(WM1.i*B2)),rowSums(t(X.i)%*%(WM1.i*ihR2)))
+        }
       }
       
       Cp=ZWZ/2
       XWX=t(X_1)%*%(c(WM0)*X_1)
       Cq=Cp+(Z2WZ2-t(XWZ2)%*%MASS::ginv(XWX)%*%XWZ2)/4
-      par0[1:2]=abs(MASS::ginv(Cq)%*%Cp%*%par0[1:2])
+      par0[1]=abs(ginv(Cq[1,1])%*%Cp[1,1]%*%par0[1])
       B0= rep(0,dim(X_1)[2]);vY0=Y0;mu0=mu;n=0
       while(n<maxiter){
         dqlAI=try(getD(par0,vY0,mu0,phe.model,SSonly=TRUE))
