@@ -88,7 +88,7 @@ rvmmat_est<-function(y.long, time, y.cov, phe.model = phe.model,maxiter = 50,tol
   }
   
   
-  getD=function(par,vY,mu1,phe.model=phe.model,SSonly=FALSE){
+  getD=function(par,vY,mu1,phe.model=phe.model){
     solveV=matrix(0,nrow=N,ncol=N)
     n.total<-1;n.rep<-as.numeric(table(time[,1]))
     for (i in 1:nrow)
@@ -149,7 +149,6 @@ rvmmat_est<-function(y.long, time, y.cov, phe.model = phe.model,maxiter = 50,tol
     }else{
       dql=rep(0,3)
       VPY=matrix(0,ncol=3,nrow=length(PY))
-      if(!SSonly){
         n.total<-1;n.rep<-as.numeric(table(time[,1]))
         for(i in 1:nrow){
           ni<-n.rep[i];index<-n.total:(n.total+ni-1);n.total<-n.total + ni
@@ -160,7 +159,6 @@ rvmmat_est<-function(y.long, time, y.cov, phe.model = phe.model,maxiter = 50,tol
           VPY[index,1]=rep(sum(PY[index]),ni)
           VPY[index,2]=R.i%*%PY[index]
         }
-      }
       dql[3]= (sum(crossprod(PY,NhalfR)^2)-sum(diag(crossprod(NhalfR,P)%*%NhalfR)))/2
       VPY[,3]=NhalfR%*%crossprod(NhalfR,PY)
       AI=(crossprod(VPY,P)%*%VPY)/2
