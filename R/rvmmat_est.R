@@ -26,7 +26,7 @@ rvmmat_est<-function(y.long, time, y.cov, phe.model = phe.model,maxiter = 50,tol
   time[,2]=time[,2]/max(time[,2])
   
   m=length(unique(time[,1]))
-  ncol=ntime=length(unique(time[,2])); knots=unique(time[,2])
+  ncol=ntime=length(unique(time[,2]));  knots=sort(unique(time[,2]))
   Rr=diag(rep(0,ntime))
   for(i in 1:ntime){
     for(jk in i:ntime){
