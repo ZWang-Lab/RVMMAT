@@ -15,7 +15,7 @@ sum(vect<x)
 
 
 
-file.path="RVMMAT_simu\\"
+file.path="simulation\\"
 
 
 #type1 logistic
