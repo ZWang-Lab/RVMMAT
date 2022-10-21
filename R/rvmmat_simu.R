@@ -31,9 +31,9 @@ rvmmat_simu<-function(n.sample=1000, n.time=5, par=list(),genetic.effect=0.6,
     if(phe.model == "logistic"){
       par$b0 = -1.9;gammat=logitcurve(n.time,genetic.effect)
     } else if(phe.model == "liability"){
-      gammat=logitcurve(n.time)
+      gammat=logitcurve(n.time,genetic.effect)
     }else{
-      gammat=logitcurve(n.time)
+      gammat=logitcurve(n.time,genetic.effect)
     }
   }
   
