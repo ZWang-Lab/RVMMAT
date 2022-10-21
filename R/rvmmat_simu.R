@@ -4,7 +4,8 @@
 #'
 #' @param n.sample Numeric, sample size, number of individuals
 #' @param n.time Numeric, number of measurements for each individual
-#' @param par List, the parameters for the phenotype traits, including covaraites and individual specific time dependent random effects
+#' @param par List, the parameters for the phenotype traits, including covariates and individual specific time dependent random effects
+#' @param genetic.effect Numeric, genetic effect size (gamma) in genetic effect function
 #' @param time_cov Logical variable, indicating whether time effect is included in phenotypic traits
 #' @param snp.count Numeric, number of SNPs
 #' @param intercept Logical variable, indicating whether intercept is used in phenotypic traits
@@ -18,8 +19,7 @@
 #' @return A list object is returned to be used as object for RVMMAT test
 #' @export
 
-
-rvmmat_simu<-function(n.sample=1000, n.time=5, par=list(),
+rvmmat_simu<-function(n.sample=1000, n.time=5, par=list(),genetic.effect=0.6,
                       time_cov=TRUE,snp.count = 100, intercept=TRUE, disease.para = list(), onlypower = FALSE, phe.model = 'logistic', oversampling = "random")
 {
   
@@ -29,7 +29,7 @@ rvmmat_simu<-function(n.sample=1000, n.time=5, par=list(),
                 sig.a = 0.8, sig.b =0.8, sig.e = 1.4,
                 rho=0.7);
     if(phe.model == "logistic"){
-      par$b0 = -1.9;gammat=logitcurve(n.time)
+      par$b0 = -1.9;gammat=logitcurve(n.time,genetic.effect)
     } else if(phe.model == "liability"){
       gammat=logitcurve(n.time)
     }else{
@@ -218,7 +218,7 @@ simu_snp<-function(n.sample, snp.count = 1000)
 simu.binary.phe<-function( n.sample, n.time, par, intercept, time_cov, disease.para, phe.model){
   
   sigma.c=matrix(0.5,n.time,n.time);diag(sigma.c)=rep(1,n.time)
-  cov.mat <- cbind( c(t(mvtnorm::rmvnorm( n.sample,  rep(0, n.time), sigma.c ))), rep(ifelse(runif(n.sample)>0.5, 0, 1), each = n.time));
+  cov.mat <- cbind( c(t(mvtnorm::rmvnorm( n.sample,  rep(0, n.time), sigma.c ))), rep(ifelse(stats::runif(n.sample)>0.5, 0, 1), each = n.time));
   
   
   if(intercept){
@@ -301,8 +301,8 @@ simu_hap<-function(p1, p2, D, n.sample){
   return(out)
 }
 
-logitcurve=function(ntime){
+logitcurve=function(ntime,genetic.effect){
   timeseq=(1:ntime)/(ntime)
-  ef=0.6/(1+0.6*exp(8-12*timeseq))
+  ef=genetic.effect/(1+genetic.effect*exp(8-12*timeseq))
   return(ef)
 }

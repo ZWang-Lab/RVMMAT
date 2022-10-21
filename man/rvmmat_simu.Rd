@@ -8,6 +8,7 @@ rvmmat_simu(
   n.sample = 1000,
   n.time = 5,
   par = list(),
+  genetic.effect = 0.6,
   time_cov = TRUE,
   snp.count = 100,
   intercept = TRUE,
@@ -22,7 +23,9 @@ rvmmat_simu(
 
 \item{n.time}{Numeric, number of measurements for each individual}
 
-\item{par}{List, the parameters for the phenotype traits, including covaraites and individual specific time dependent random effects}
+\item{par}{List, the parameters for the phenotype traits, including covariates and individual specific time dependent random effects}
+
+\item{genetic.effect}{Numeric, genetic effect size (gamma) in genetic effect function}
 
 \item{time_cov}{Logical variable, indicating whether time effect is included in phenotypic traits}
 

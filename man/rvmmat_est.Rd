@@ -12,7 +12,7 @@ rvmmat_est(
   maxiter = 50,
   tol = 10^(-6),
   Hd = 2,
-  VCcorrection = TRUE
+  VCcorrection = FALSE
 )
 }
 \arguments{
