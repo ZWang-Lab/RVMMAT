@@ -63,10 +63,10 @@ rvmmat_est<-function(y.long, time, y.cov, phe.model = phe.model,maxiter = 50,tol
       v2 <- 0.7^abs(AR.1-t(AR.1));
       if(ni==1){if(phe.model=="Gaussian"){ v3=par[4];
       } else{  v3<-(mu.i*(1-mu.i))^-1}
-        solveV[index,index]<-solve(par[1]+par[2]+v3);
+        solveV[index,index]<-MASS::ginv(par[1]+par[2]+v3);
       }else{      if(phe.model=="Gaussian"){ v3=diag(par[4], ni);
       } else{  v3<-diag((mu.i*(1-mu.i))^-1)}
-        solveV[index,index]<-solve(par[1]*v1+par[2]*v2+v3);
+        solveV[index,index]<-MASS::ginv(par[1]*v1+par[2]*v2+v3);
       }
       
     }
@@ -78,8 +78,8 @@ rvmmat_est<-function(y.long, time, y.cov, phe.model = phe.model,maxiter = 50,tol
     VX <- solveV%*%X_1
     VY <- solveV%*%vY
     XVX <- crossprod(X_1,VX)
-    P=solveV-tcrossprod(VX%*%solve(XVX),VX)
-    B=solve(XVX)%*%crossprod(X_1,VY)
+    P=solveV-tcrossprod(VX%*%MASS::ginv(XVX),VX)
+    B=MASS::ginv(XVX)%*%crossprod(X_1,VY)
     PY=P%*%vY
     eta=vY-(mu1*(1-mu1))^(-1)*PY
     mu1= inv.logit(eta)
@@ -100,10 +100,10 @@ rvmmat_est<-function(y.long, time, y.cov, phe.model = phe.model,maxiter = 50,tol
       v2 <- 0.7^abs(AR.1-t(AR.1));
       if(ni==1){if(phe.model=="Gaussian"){ v3=par[4];
       } else{  v3<-(mu.i*(1-mu.i))^-1}
-        solveV[index,index]<-solve(par[1]+par[2]+v3);
+        solveV[index,index]<-MASS::ginv(par[1]+par[2]+v3);
       }else{      if(phe.model=="Gaussian"){ v3=diag(par[4], ni);
       } else{  v3<-diag((mu.i*(1-mu.i))^-1)}
-        solveV[index,index]<-solve(par[1]*v1+par[2]*v2+v3);
+        solveV[index,index]<-MASS::ginv(par[1]*v1+par[2]*v2+v3);
       }
     }
     for(km in 1:ncol){
@@ -114,8 +114,8 @@ rvmmat_est<-function(y.long, time, y.cov, phe.model = phe.model,maxiter = 50,tol
     VX <- solveV%*%X_1
     VY <- solveV%*%vY
     XVX <- crossprod(X_1,VX)
-    B=solve(XVX)%*%crossprod(X_1,VY)
-    P=solveV-tcrossprod(VX%*%solve(XVX),VX)
+    B=MASS::ginv(XVX)%*%crossprod(X_1,VY)
+    P=solveV-tcrossprod(VX%*%MASS::ginv(XVX),VX)
     PY=P%*%vY
     if(phe.model=="Gaussian"){
       dql=rep(0,4)
