@@ -123,9 +123,10 @@ rvmmat_test <-function(rvmmat.est, G, impute.method='fixed', GRM = NULL)
     
     Tp=(tan((0.5-pSmoothsL2)*pi)+tan((0.5-pSmoothsSKAT2)*pi))/2
     pSmoothsACAT2=0.5-atan(Tp)/pi
+    if(pSmoothsACAT2==0) pSmoothsACAT2=2*pSmoothsL2*pSmoothsSKAT2/(pSmoothsL2+pSmoothsSKAT2)
     Tr=(tan((0.5-pSmoothsL.retro2)*pi)+tan((0.5-pSmoothsSKAT.retro2)*pi))/2
     pSmoothsACAT.retro2=0.5-atan(Tr)/pi
-    
+    if(pSmoothsACAT.retro2==0) pSmoothsACAT.retro2=2*pSmoothsL.retro2*pSmoothsSKAT.retro2/(pSmoothsL.retro2+pSmoothsSKAT.retro2)
     result=cbind(pSmoothsACAT2, pSmoothsACAT.retro2)
     type1result=rbind(type1result,result)
   }
