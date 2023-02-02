@@ -206,7 +206,7 @@ rvmmat_est<-function(y.long, time, y.cov, phe.model = phe.model,maxiter = 50,tol
     eta <- fit0$linear.predictors
     Y0 <- eta + fit0$residuals
     mu <- inv.logit(eta)
-    par.init <-  rep(stats::var(Y0, na.rm=T)/3,3);
+    par.init <-  rep(stats::var(Y0, na.rm=T)/3,3); par.init[2]=0
     par0= par.init
     
     B0= rep(0,dim(X_1)[2]);vY0=Y0;mu0=mu;n=0
@@ -525,7 +525,7 @@ glmm_est<-function(y.long, time, y.cov, phe.model = phe.model,maxiter = 50,tol=1
     eta <- fit0$linear.predictors
     Y0 <- eta + fit0$residuals 
     mu <- inv.logit(eta)
-    par.init <-  rep(stats::var(Y0, na.rm=T)/2,2);
+    par.init <-  rep(stats::var(Y0, na.rm=T)/2,2);par.init[2]=0
     par0= par.init
     B0= rep(0,dim(X_1)[2]);vY0=Y0;mu0=mu;n=0
     while(n<maxiter){
