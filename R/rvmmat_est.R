@@ -191,7 +191,7 @@ rvmmat_est<-function(y.long, time, y.cov, phe.model = phe.model,maxiter = 50,tol
       B1=dqlAI$B
       #   cat("SIG=",parc, "COV=", B1, "\n");
       
-      if(max(abs(c(parc,B1)))>1000) {
+      if(max(abs(c(parc,B1)))>10000) {
         par0=rep(stats::var(y.long, na.rm=T)/4,4)*stats::runif(4);vY0=Y0;mu0=mu
         next
       }
@@ -227,7 +227,7 @@ rvmmat_est<-function(y.long, time, y.cov, phe.model = phe.model,maxiter = 50,tol
         next
       }}
       
-      if(max(abs(c(parc,B1)))>1000) {
+      if(max(abs(c(parc,B1)))>10000) {
         par0=rep(stats::var(Y0, na.rm=T)/3,3)*stats::runif(3);vY0=Y0;mu0=mu
         next
       }
@@ -510,7 +510,7 @@ glmm_est<-function(y.long, time, y.cov, phe.model = phe.model,maxiter = 50,tol=1
       parc=dqlAI$par
       B1=dqlAI$B
       
-      if(max(abs(c(parc,B1)))>1000) {
+      if(max(abs(c(parc,B1)))>10000) {
         par0=rep(stats::var(y.long, na.rm=T)/3,3)*stats::runif(3);vY0=Y0;mu0=mu
         next
       }
@@ -544,7 +544,7 @@ glmm_est<-function(y.long, time, y.cov, phe.model = phe.model,maxiter = 50,tol=1
         next
       }}
       
-      if(max(abs(c(parc,B1)))>1000) {
+      if(max(abs(c(parc,B1)))>10000) {
         par0=rep(stats::var(Y0, na.rm=T)/2,2)*stats::runif(2);vY0=Y0;mu0=mu
         next
       }
