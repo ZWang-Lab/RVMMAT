@@ -583,7 +583,7 @@ glmm_est<-function(y.long, time, y.cov, phe.model = phe.model,maxiter = 50,tol=1
       V[[i]]<- tau[1]+ tau[2]+v3
       solveVM[index,index]<-solve(tau[1]+ tau[2]+v3);
     }else{     
-      if(phe.model=="Gaussian"){ v3=diag(tau[4], ni);
+      if(phe.model=="Gaussian"){ v3=diag(tau[3], ni);
       } else{  mu.i<-mu1[index]; v3<-diag((mu.i*(1-mu.i))^-1)
       }
       V[[i]]<- tau[1]*v1+ tau[2]*v2+v3
