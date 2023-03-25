@@ -183,7 +183,7 @@ rvmmat_est<-function(y.long, time, y.cov, phe.model = phe.model,maxiter = 50,tol
   if(phe.model=="Gaussian"){
     par.init <-  rep(stats::var(y.long, na.rm=T)/4,4);
     par0= par.init
-    
+    Y0=y.long
     B0= rep(0,dim(X_1)[2]);n=0
     while(n<maxiter){
       dqlAI=getD(par0,y.long,y.long,phe.model)
@@ -509,7 +509,7 @@ glmm_est<-function(y.long, time, y.cov, phe.model = phe.model,maxiter = 50,tol=1
       dqlAI=getD(par0,y.long,y.long,phe.model)
       parc=dqlAI$par
       B1=dqlAI$B
-      
+      Y0=y.long
       if(max(abs(c(parc,B1)))>10000) {
         par0=rep(stats::var(y.long, na.rm=T)/3,3)*stats::runif(3);vY0=Y0;mu0=mu
         next
