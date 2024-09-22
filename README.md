@@ -29,4 +29,4 @@ All functions and examples in the RVMMAT are available in the manual file (https
 
 ## Citation
 
-Xu, G., Amei, A., Wu, W., Liu, Y., Shen, L., Oh, E.C. and Wang, Z., 2024. Retrospective varying coefficient association analysis of longitudinal binary traits: application to the identification of genetic loci associated with hypertension. The annals of applied statistics, 18(1), p.487.(10.1214/23-aoas1798)
+Xu, G., Amei, A., Wu, W., Liu, Y., Shen, L., Oh, E.C. and Wang, Z., 2024. Retrospective varying coefficient association analysis of longitudinal binary traits: application to the identification of genetic loci associated with hypertension. The annals of applied statistics, 18(1), p.487. (doi: 10.1214/23-aoas1798)
